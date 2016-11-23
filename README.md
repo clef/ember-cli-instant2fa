@@ -1,27 +1,56 @@
-# Ember-cli-instant2fa
+# ember-cli-instant2fa
 
 This README outlines the details of collaborating on this Ember addon.
 
 ## Installation
 
-* `git clone <repository-url>` this repository
-* `cd ember-cli-instant2fa`
-* `npm install`
-* `bower install`
+```bash
+ember install ember-cli-instant2fa
+```
 
-## Running
+## Settings page
 
-* `ember serve`
-* Visit your app at [http://localhost:4200](http://localhost:4200).
+Use the `instant2fa-page` component in your template to register the hosted settings page.
 
-## Running Tests
+```
+# instant2fa-settings.hbs
 
-* `npm test` (Runs `ember try:each` to test your addon against multiple Ember versions)
-* `ember test`
-* `ember test --server`
+{{instant2fa-page uri=uri}}
+```
 
-## Building
+## Verification page
 
-* `ember build`
+Use the `instant2fa-page` component in your template to register the hosted verification page.
 
-For more information on using ember-cli, visit [http://ember-cli.com/](http://ember-cli.com/).
+```
+# instant2fa-verification.hbs
+
+{{instant2fa-page uri=uri onEvent=(action "onEvent")}}
+```
+
+Handle the event with the `onEvent` handler to process successful verfications.
+
+```
+# instant2fa-verification.js
+
+import Ember from 'ember';
+
+export default Ember.Component.extend({
+  actions: {
+    onEvent(e) {
+      if (e.type === 'verificationSuccess') {
+        var token = event.payload.token;
+        console.log("Verification token is: " + token);
+
+        $.ajax({
+            method: 'POST',
+            url: '/two-factor-verification',
+            data: {
+                instant2faToken: event.payload.token
+            }
+        });
+      }
+    }
+  }
+});
+```
