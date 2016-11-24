@@ -1,0 +1,1 @@
+export { default } from 'ember-cli-instant2fa/components/instant2fa-page';
